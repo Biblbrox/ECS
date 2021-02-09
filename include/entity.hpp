@@ -9,8 +9,10 @@
 namespace ecs
 {
 
-    class CesManager;
-
+    /**
+     * Avoid circular including
+     */
+    class EcsManager;
     class Component;
 
     /**
@@ -36,7 +38,7 @@ namespace ecs
         Entity &operator=(const Entity &) = default;
 
         /**
-         * Create new component and return
+         * Create new component and return it
          * ComponentType must be child of Component class
          * @tparam ComponentType
          * @return
@@ -51,6 +53,12 @@ namespace ecs
             return m_components[type_id<ComponentType>()];
         }
 
+        /**
+         * Create new component and return it
+         * Each of ComponentTypes must be child of Component class
+         * @tparam ComponentType
+         * @return
+         */
         template<class ...ComponentTypes>
         void addComponents()
         {
@@ -73,7 +81,7 @@ namespace ecs
 
 
         /**
-         * Get component by type
+         * Get component iterator by type
          * @tparam ComponentType
          * @return
          */
@@ -107,13 +115,13 @@ namespace ecs
 
         /**
          * Get component by type or insert if doesn't exists.
-         * This method is much faster than getComponent if
-         * new component don't created.
+         * This method is much faster than getComponent when
+         * new component is not created.
          * @tparam ComponentType
          * @return
          */
         template<class ComponentType>
-        std::shared_ptr<ComponentType> getComponentInsert()
+        std::shared_ptr<ComponentType> getComponentNew()
         {
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
@@ -135,17 +143,20 @@ namespace ecs
         const std::unordered_map<size_t, std::shared_ptr<Component>> &
         getComponents() const;
 
-        void setCesManager(CesManager *cesMan);
+        void setEcsManager(EcsManager *ecs);
 
         void activate();
 
         bool isActivate() const;
 
+        /**
+         * Set m_alive to false
+         */
         void kill();
 
     private:
         std::unordered_map<size_t, std::shared_ptr<Component>> m_components;
-        CesManager *m_cesManager;
+        EcsManager *m_ecsManager;
         bool m_alive;
     };
 }

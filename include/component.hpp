@@ -3,7 +3,7 @@
 
 namespace ecs
 {
-    class CesManager;
+    class EcsManager;
 
     /**
      * Base class for component
@@ -11,15 +11,15 @@ namespace ecs
     class Component
     {
     public:
-        Component() : m_cesManager(nullptr)
+        Component() : m_ecsManager(nullptr)
         {};
 
         virtual ~Component() = default;
 
-        virtual void setCesManager(CesManager *cesMan) final;
+        virtual void setEcsManager(EcsManager *ecs) final;
 
     private:
-        CesManager *m_cesManager;
+        EcsManager *m_ecsManager;
     };
 }
 

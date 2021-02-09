@@ -3,7 +3,6 @@
 
 namespace ecs
 {
-
     /**
     * TypeList declaration
     * @tparam Args
@@ -24,7 +23,7 @@ namespace ecs
     };
 
     /**
-     * Add Type to TypeList
+     * Insert Type to TypeList
      * @tparam H
      * @tparam TypeList
      */

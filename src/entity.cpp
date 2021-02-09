@@ -14,9 +14,9 @@ ecs::Entity::getComponents() const
     return m_components;
 }
 
-void ecs::Entity::setCesManager(CesManager* cesMan)
+void ecs::Entity::setEcsManager(EcsManager* ecs)
 {
-    m_cesManager = cesMan;
+    m_ecsManager = ecs;
 }
 
 bool ecs::Entity::isActivate() const

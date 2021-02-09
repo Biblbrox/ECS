@@ -3,7 +3,7 @@
 
 namespace ecs
 {
-    class CesManager;
+    class EcsManager;
 
     /**
      * System base class
@@ -11,14 +11,14 @@ namespace ecs
     class BaseSystem
     {
     public:
-        BaseSystem() : m_stopped(false), m_cesManager(nullptr)
+        BaseSystem() : m_stopped(false), m_ecsManager(nullptr)
         {};
 
         virtual ~BaseSystem() = default;
 
-        virtual void setCesManager(CesManager *cesMan) final
+        virtual void setEcsManager(EcsManager *ecs) final
         {
-            m_cesManager = cesMan;
+            m_ecsManager = ecs;
         }
 
         virtual void update(size_t delta) final
@@ -46,7 +46,7 @@ namespace ecs
     protected:
         virtual void update_state(size_t delta) = 0;
 
-        CesManager *m_cesManager;
+        EcsManager *m_ecsManager;
         bool m_stopped;
     };
 }

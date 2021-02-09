@@ -8,7 +8,7 @@
 #include "typelist.hpp"
 #include "basesystem.hpp"
 #include "entity.hpp"
-#include "cesmanager.hpp"
+#include "ecsmanager.hpp"
 
 namespace ecs
 {

@@ -8,12 +8,23 @@
 
 namespace ecs
 {
-
-    class CesManager
+    /**
+     * ECS manager class.
+     * It must create systems and update them
+     * This also used by systems to fetch entities
+     */
+    class EcsManager
     {
     public:
+        /**
+         * Create systems, etc...
+         */
         virtual void init() = 0;
 
+        /**
+         * Update systems
+         * @param delta
+         */
         virtual void update(size_t delta) = 0;
 
         virtual std::shared_ptr<Entity> createEntity(const std::string &name);

@@ -1,8 +1,8 @@
-#include "cesmanager.hpp"
+#include "ecsmanager.hpp"
 #include "component.hpp"
 
-void ecs::Component::setCesManager(CesManager* cesMan)
+void ecs::Component::setEcsManager(EcsManager* ecs)
 {
-    m_cesManager = cesMan;
+    m_ecsManager = ecs;
 }
 
