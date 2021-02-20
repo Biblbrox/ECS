@@ -12,7 +12,6 @@
 
 namespace ecs
 {
-
     /**
      * Specialization
      */
@@ -22,7 +21,7 @@ namespace ecs
     public:
         explicit System()
         {
-            m_componentTypes.insert({type_id<Args>()...});
+            m_componentTypes.insert({types::type_id<Args>...});
         }
 
         virtual ~System() = default;
@@ -33,7 +32,7 @@ namespace ecs
          */
         auto getEntities() const
         {
-            auto filtered = m_cesManager->getEntities();
+            auto filtered = m_ecsManager->getEntities();
             for (auto it = filtered.begin(); it != filtered.end();) {
                 auto components = it->second->getComponents();
                 if (std::any_of(m_componentTypes.begin(), m_componentTypes.end(),
@@ -56,10 +55,10 @@ namespace ecs
         template<typename... ComponentTypes>
         auto getEntitiesByTags() const
         {
-            static_assert(IsBaseOfRec<Component, TypeList<ComponentTypes...>>::value,
+            static_assert(types::IsBaseOfRec<Component, types::TypeList<ComponentTypes...>>::value,
                           "Template parameter class must be child of Component");
-            using ComponentList = TypeList<ComponentTypes...>;
-            static_assert(Length<ComponentList>::value >= 2,
+            using ComponentList = types::TypeList<ComponentTypes...>;
+            static_assert(types::Length<ComponentList>::value >= 2,
                           "Length of ComponentTypes must be greeter than 2");
 
             auto bin = [](bool x, bool y) { return x && y; };
@@ -105,6 +104,6 @@ namespace ecs
         // Contains id's of each component type system can handle
         std::set<size_t> m_componentTypes;
     };
-}
+};
 
 #endif //SYSTEM_HPP

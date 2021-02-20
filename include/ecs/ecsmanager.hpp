@@ -41,8 +41,8 @@ namespace ecs
                           "Template parameter class must be child of BaseSystem");
 
             std::shared_ptr<SystemType> system(new SystemType());
-            system->setCesManager(this);
-            m_systems.insert({type_id<SystemType>(),
+            system->setEcsManager(this);
+            m_systems.insert({types::type_id<SystemType>,
                               std::static_pointer_cast<BaseSystem>(system)});
             return *system;
         }
@@ -56,6 +56,6 @@ namespace ecs
         std::unordered_map<size_t, std::shared_ptr<Entity>> m_entities;
         std::unordered_map<size_t, std::shared_ptr<BaseSystem>> m_systems;
     };
-}
+};
 
 #endif //ECSMANAGER_HPP
