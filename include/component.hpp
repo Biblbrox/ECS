@@ -3,23 +3,15 @@
 
 namespace ecs
 {
-    class EcsManager;
-
     /**
      * Base class for component
      */
     class Component
     {
     public:
-        Component() : m_ecsManager(nullptr)
-        {};
+        Component(){};
 
         virtual ~Component() = default;
-
-        virtual void setEcsManager(EcsManager *ecs) final;
-
-    private:
-        EcsManager *m_ecsManager;
     };
 }
 

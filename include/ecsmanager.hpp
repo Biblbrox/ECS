@@ -1,5 +1,5 @@
-#ifndef CESMANAGER_HPP
-#define CESMANAGER_HPP
+#ifndef ECSMANAGER_HPP
+#define ECSMANAGER_HPP
 
 #include <string>
 
@@ -27,7 +27,12 @@ namespace ecs
          */
         virtual void update(size_t delta) = 0;
 
-        virtual std::shared_ptr<Entity> createEntity(const std::string &name);
+        virtual std::shared_ptr<Entity> createEntity(const std::string &name)
+        {
+            std::shared_ptr ent = std::make_shared<Entity>();
+            m_entities.emplace(name, ent);
+            return m_entities[name];
+        }
 
         template<typename SystemType>
         SystemType &createSystem()
@@ -42,7 +47,10 @@ namespace ecs
             return *system;
         }
 
-        virtual std::unordered_map<std::string, std::shared_ptr<Entity>> &getEntities();
+        virtual std::unordered_map<std::string, std::shared_ptr<Entity>> &getEntities()
+        {
+            return m_entities;
+        }
 
     protected:
         std::unordered_map<std::string, std::shared_ptr<Entity>> m_entities;
@@ -50,4 +58,4 @@ namespace ecs
     };
 }
 
-#endif //CESMANAGER_HPP
+#endif //ECSMANAGER_HPP

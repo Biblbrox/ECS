@@ -25,7 +25,6 @@ FILE(GLOB_RECURSE CPP RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 FILE(GLOB_RECURSE HPP RELATIVE ${CMAKE_SOURCE_DIR} "include/*.hpp" "include/*.h")
 
 set(SOURCES ${HPP} ${CPP})
-set(SDL2_TTF_LIBRARIES SDL2_ttf)
 
 add_executable(${GAME_NAME} ${SOURCES})
 target_link_libraries(${GAME_NAME})

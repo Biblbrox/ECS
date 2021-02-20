@@ -5,9 +5,13 @@
 #include <unordered_map>
 
 #include "typelist.hpp"
+#include "component.hpp"
+#include "robin_hood.h"
 
 namespace ecs
 {
+//    typedef robin_hood::unordered_map<size_t, std::shared_ptr<Component>> ComponentMap;
+    typedef std::unordered_map<size_t, std::shared_ptr<Component>> ComponentMap;
 
     /**
      * Avoid circular including
@@ -85,8 +89,7 @@ namespace ecs
          * @tparam ComponentType
          * @return
          */
-        template<class ComponentType>
-        std::unordered_map<size_t, std::shared_ptr<Component>>::iterator
+        template<class ComponentType> ComponentMap::iterator
         getComponentIt()
         {
             static_assert(std::is_base_of_v<Component, ComponentType>,
@@ -115,8 +118,6 @@ namespace ecs
 
         /**
          * Get component by type or insert if doesn't exists.
-         * This method is much faster than getComponent when
-         * new component is not created.
          * @tparam ComponentType
          * @return
          */
@@ -140,23 +141,31 @@ namespace ecs
                 m_components.erase(it);
         }
 
-        const std::unordered_map<size_t, std::shared_ptr<Component>> &
-        getComponents() const;
+        const ComponentMap& getComponents() const
+        {
+            return m_components;
+        }
 
-        void setEcsManager(EcsManager *ecs);
+        void activate()
+        {
+            m_alive = true;
+        }
 
-        void activate();
-
-        bool isActivate() const;
+        bool isActivate() const
+        {
+            return m_alive;
+        }
 
         /**
          * Set m_alive to false
          */
-        void kill();
+        void kill()
+        {
+            m_alive = false;
+        }
 
     private:
-        std::unordered_map<size_t, std::shared_ptr<Component>> m_components;
-        EcsManager *m_ecsManager;
+        ComponentMap m_components;
         bool m_alive;
     };
 }
