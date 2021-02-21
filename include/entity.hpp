@@ -8,13 +8,10 @@
 #include "component.hpp"
 #include "robin_hood.h"
 
-inline int type_id_seq = 0;
-template< typename T > inline const int type_id = type_id_seq++;
-
 namespace ecs
 {
+
     typedef robin_hood::unordered_map<size_t, std::shared_ptr<Component>> ComponentMap;
-//    typedef std::unordered_map<size_t, std::shared_ptr<Component>> ComponentMap;
 
     /**
      * Avoid circular including
@@ -55,9 +52,9 @@ namespace ecs
         {
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
-            m_components[type_id<ComponentType>] =
+            m_components[types::type_id<ComponentType>] =
                     std::static_pointer_cast<Component>(std::make_shared<ComponentType>());
-            return m_components[type_id<ComponentType>];
+            return m_components[types::type_id<ComponentType>];
         }
 
         /**
@@ -69,21 +66,21 @@ namespace ecs
         template<class ...ComponentTypes>
         void addComponents()
         {
-            static_assert(IsBaseOfRec<Component, TypeList<ComponentTypes...>>::value,
+            static_assert(types::IsBaseOfRec<Component, types::TypeList<ComponentTypes...>>::value,
                           "Template parameter class must be child of Component");
-            using ComponentList = TypeList<ComponentTypes...>;
-            static_assert(Length<ComponentList>::value >= 2,
+            using ComponentList = types::TypeList<ComponentTypes...>;
+            static_assert(types::Length<ComponentList>::value >= 2,
                           "Length of ComponentTypes must be greeter than 2");
 
             auto bin = [](auto x, auto y) { return 0; };
 
             auto un = [this](auto x) {
-                m_components[type_id<decltype(x)>] =
+                m_components[types::type_id<decltype(x)>] =
                         std::static_pointer_cast<Component>(std::make_shared<decltype(x)>());
                 return 0;
             };
 
-            typeListReduce<ComponentList>(un, bin);
+            types::typeListReduce<ComponentList>(un, bin);
         }
 
 
@@ -97,7 +94,7 @@ namespace ecs
         {
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
-            auto it = m_components.find(type_id<ComponentType>);
+            auto it = m_components.find(types::type_id<ComponentType>);
             return it;
         }
 
@@ -112,7 +109,7 @@ namespace ecs
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
 
-            const auto& it = m_components.find(type_id<ComponentType>);
+            const auto& it = m_components.find(types::type_id<ComponentType>);
             if (it == m_components.end())
                 return std::shared_ptr<ComponentType>(nullptr);
 
@@ -130,7 +127,7 @@ namespace ecs
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
 
-            return std::dynamic_pointer_cast<ComponentType>(m_components[type_id<ComponentType>()]);
+            return std::dynamic_pointer_cast<ComponentType>(m_components[types::type_id<ComponentType>]);
         }
 
         template<class ComponentType>
@@ -139,7 +136,7 @@ namespace ecs
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
 
-            auto it = m_components.find(type_id<ComponentType>);
+            auto it = m_components.find(types::type_id<ComponentType>);
             if (it != m_components.end())
                 m_components.erase(it);
         }
@@ -171,6 +168,6 @@ namespace ecs
         ComponentMap m_components;
         bool m_alive;
     };
-}
+};
 
 #endif //ENTITY_HPP

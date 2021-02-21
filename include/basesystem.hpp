@@ -49,6 +49,6 @@ namespace ecs
         EcsManager *m_ecsManager;
         bool m_stopped;
     };
-}
+};
 
 #endif //BASESYSTEM_HPP
