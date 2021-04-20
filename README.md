@@ -1,3 +1,5 @@
+<h1>Usage</h1>
+
 C++17 Entity Component System implementation.
 
 The core of ECS is the EcsManager class. It contains all systems
@@ -73,3 +75,6 @@ typedef robin_hood::unordered_map<size_t, std::shared_ptr<Component>> ComponentM
 
 you can use any unordered_map implementation instead of robin_hood::unordered_map.
 Just replace this line with desired unordered_map if you need.
+
+<h1>Installation</h1>
+Just copy header files to desired directory.
