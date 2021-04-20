@@ -39,7 +39,7 @@ To add component to Entity you to do following, for example:
 
 ```c++
 
-Entity &ship = createEntity("ship");
+Entity &ship = createEntity(ship_id);
 ship.addComponents<PositionComponent, SpriteComponent, VelocityComponent,
 KeyboardComponent, AnimationComponent, CollisionComponent,
         LifeTimeComponent>();

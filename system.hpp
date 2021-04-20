@@ -10,6 +10,8 @@
 #include "entity.hpp"
 #include "ecsmanager.hpp"
 
+using ecs::types::typeListReduce;
+
 namespace ecs
 {
     /**
@@ -89,7 +91,7 @@ namespace ecs
         {
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "ComponentType class must be child of Component");
-            auto &filtered = m_ecsManager->getEntities();
+            auto filtered = m_ecsManager->getEntities();
             for (auto it = filtered.begin(); it != filtered.end();) {
                 if (!it->second->getComponent<ComponentType>())
                     it = filtered.erase(it);

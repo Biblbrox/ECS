@@ -16,7 +16,6 @@ namespace ecs
     /**
      * Avoid circular including
      */
-    class EcsManager;
     class Component;
 
     /**
@@ -58,7 +57,7 @@ namespace ecs
         }
 
         /**
-         * Create new component and return it
+         * Create new component
          * Each of ComponentTypes must be child of Component class
          * @tparam ComponentType
          * @return

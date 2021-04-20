@@ -9,7 +9,7 @@
 namespace ecs
 {
     /**
-     * ECS manager class.
+     * ecs manager class.
      * It must create systems and update them
      * This also used by systems to fetch entities
      */
