@@ -35,6 +35,7 @@ namespace ecs
         Entity(Entity &&en) = default;
 
         Entity(Entity &en) = default;
+        Entity(const Entity &en) = default;
 
         Entity &operator=(Entity &&) = default;
 
@@ -116,6 +117,24 @@ namespace ecs
         }
 
         /**
+       * Get component by type
+       * @tparam ComponentType
+       * @return
+       */
+        template<class ComponentType>
+        std::shared_ptr<ComponentType> getComponent() const
+        {
+            static_assert(std::is_base_of_v<Component, ComponentType>,
+                          "Template parameter class must be child of Component");
+
+            const auto& it = m_components.find(types::type_id<ComponentType>);
+            if (it == m_components.end())
+                return std::shared_ptr<ComponentType>(nullptr);
+
+            return std::dynamic_pointer_cast<ComponentType>(it->second);
+        }
+
+        /**
          * Get component by type or insert if doesn't exists.
          * @tparam ComponentType
          * @return
@@ -163,7 +182,7 @@ namespace ecs
             m_alive = false;
         }
 
-    private:
+//    private:
         ComponentMap m_components;
         bool m_alive;
     };

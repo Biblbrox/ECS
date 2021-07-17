@@ -138,11 +138,6 @@ namespace ecs::types
 
     inline int type_id_seq = 0;
     template< typename T > inline const int type_id = type_id_seq++;
-//    template<typename T>
-//    constexpr size_t type_id() noexcept
-//    {
-//        return typeid(T).hash_code();
-//    }
 };
 
 #endif //TYPELIST_HPP
