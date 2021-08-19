@@ -78,3 +78,4 @@ Just replace this line with desired unordered_map if you need.
 
 <h1>Installation</h1>
 Just copy header files to desired directory.
+You can also use single header ecs.hpp without any other headers.

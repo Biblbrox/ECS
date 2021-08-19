@@ -21,15 +21,31 @@ namespace ecs
          */
         virtual void init() = 0;
 
+        // TODO: remove these two methods
+        /**
+         * Create systems, etc...
+         */
+        virtual void init(const std::string &init_file) = 0;
+        virtual void addEntityFromFile(const std::string &model_file) = 0;
+
+
+        virtual int genUniqueId() const
+
+        noexcept
+        {
+            static int id = 0;
+            return id++;
+        }
+
         /**
          * Update systems
          * @param delta
          */
         virtual void update(size_t delta) = 0;
 
-        virtual std::shared_ptr<Entity> createEntity(size_t name)
+        virtual std::shared_ptr <Entity> createEntity(size_t name)
         {
-            std::shared_ptr ent = std::make_shared<Entity>();
+            std::shared_ptr ent = std::make_shared<Entity>(name);
             m_entities.emplace(name, ent);
             return m_entities[name];
         }
@@ -37,24 +53,25 @@ namespace ecs
         template<typename SystemType>
         SystemType &createSystem()
         {
-            static_assert(std::is_base_of_v<BaseSystem, SystemType>,
+            static_assert(std::is_base_of_v < BaseSystem, SystemType > ,
                           "Template parameter class must be child of BaseSystem");
 
-            std::shared_ptr<SystemType> system(new SystemType());
+            std::shared_ptr <SystemType> system(new SystemType());
             system->setEcsManager(this);
             m_systems.insert({types::type_id<SystemType>,
                               std::static_pointer_cast<BaseSystem>(system)});
             return *system;
         }
 
-        virtual std::unordered_map<size_t, std::shared_ptr<Entity>> &getEntities()
+        virtual std::unordered_map <size_t, std::shared_ptr<Entity>> &
+        getEntities()
         {
             return m_entities;
         }
 
     protected:
-        std::unordered_map<size_t, std::shared_ptr<Entity>> m_entities;
-        std::unordered_map<size_t, std::shared_ptr<BaseSystem>> m_systems;
+        std::unordered_map <size_t, std::shared_ptr<Entity>> m_entities;
+        std::unordered_map <size_t, std::shared_ptr<BaseSystem>> m_systems;
     };
 };
 
