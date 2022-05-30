@@ -135,6 +135,12 @@ namespace ecs::types
         }
     }
 
+    template<class T, class U=
+    typename std::remove_cv<typename std::remove_pointer<
+            typename std::remove_reference<typename std::remove_extent<T>::type
+            >::type>::type>::type> struct remove_all : remove_all<U> {};
+    template<class T> struct remove_all<T, T> { typedef T type; };
+    template<class T> using remove_all_t = typename remove_all<T>::type;
 
     inline int type_id_seq = 0;
     template< typename T > inline const int type_id = type_id_seq++;

@@ -25,8 +25,7 @@ namespace ecs
     class Entity
     {
     public:
-
-        Entity() : m_alive(false)
+        Entity(size_t id) : m_alive(false), m_id(id)
         {}
 
         ~Entity()
@@ -54,6 +53,21 @@ namespace ecs
                           "Template parameter class must be child of Component");
             m_components[types::type_id<ComponentType>] =
                     std::static_pointer_cast<Component>(std::make_shared<ComponentType>());
+            return m_components[types::type_id<ComponentType>];
+        }
+
+        /**
+         * Create new component and return it
+         * ComponentType must be child of Component class
+         * @tparam ComponentType
+         * @return
+         */
+        template<class ComponentType>
+        std::shared_ptr<Component> addComponent(const ComponentType& comp)
+        {
+            m_components[types::type_id<ComponentType>] =
+                    std::static_pointer_cast<Component>(
+                            std::make_shared<ComponentType>(comp));
             return m_components[types::type_id<ComponentType>];
         }
 
@@ -122,16 +136,16 @@ namespace ecs
        * @return
        */
         template<class ComponentType>
-        std::shared_ptr<ComponentType> getComponent() const
+        std::shared_ptr<const ComponentType> getComponent() const
         {
             static_assert(std::is_base_of_v<Component, ComponentType>,
                           "Template parameter class must be child of Component");
 
             const auto& it = m_components.find(types::type_id<ComponentType>);
             if (it == m_components.end())
-                return std::shared_ptr<ComponentType>(nullptr);
+                return std::shared_ptr<const ComponentType>(nullptr);
 
-            return std::dynamic_pointer_cast<ComponentType>(it->second);
+            return std::dynamic_pointer_cast<const ComponentType>(it->second);
         }
 
         /**
@@ -164,27 +178,41 @@ namespace ecs
             return m_components;
         }
 
-        void activate()
+        void activate() noexcept
         {
             m_alive = true;
         }
 
-        bool isActivate() const
+        bool isActivate() const noexcept
         {
             return m_alive;
         }
 
-        /**
-         * Set m_alive to false
-         */
-        void kill()
+        size_t getId() const noexcept
+        {
+            return m_id;
+        }
+
+        void setId(size_t id) noexcept
+        {
+            m_id = id;
+        }
+
+        void kill() noexcept
         {
             m_alive = false;
         }
 
-//    private:
+        std::string& name()
+        {
+            return m_name;
+        }
+
+    private:
         ComponentMap m_components;
         bool m_alive;
+        size_t m_id;
+        std::string m_name;
     };
 };
 

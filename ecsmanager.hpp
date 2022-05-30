@@ -1,61 +1,88 @@
 #ifndef ECSMANAGER_HPP
 #define ECSMANAGER_HPP
 
+#include <crossguid/guid.hpp>
 #include <string>
 
-#include "entity.hpp"
 #include "basesystem.hpp"
+#include "entity.hpp"
 
-namespace ecs
-{
+namespace ecs {
+/**
+ * ecs manager class.
+ * It must create systems and update them
+ * This also used by systems to fetch entities
+ */
+class EcsManager {
+  public:
+    using EntityNames = std::unordered_map<std::string, size_t>;
+    using Entities = std::unordered_map<size_t, std::shared_ptr<Entity>>;
+    using Systems = std::unordered_map<size_t, std::shared_ptr<BaseSystem>>;
+
     /**
-     * ecs manager class.
-     * It must create systems and update them
-     * This also used by systems to fetch entities
+     * Create systems, etc...
      */
-    class EcsManager
+    virtual void init() = 0;
+
+    /**
+     * Create systems, etc...
+     */
+    virtual void init(const std::string &init_file) = 0;
+
+    virtual void addEntityFromFile(const std::string &model_file) = 0;
+
+    virtual int genUniqueId() const noexcept
     {
-    public:
-        /**
-         * Create systems, etc...
-         */
-        virtual void init() = 0;
+        static int id = 0;
+        return id++;
+    }
 
-        /**
-         * Update systems
-         * @param delta
-         */
-        virtual void update(size_t delta) = 0;
+    virtual std::string genUniqueName() const noexcept
+    {
+        return xg::newGuid().str();
+    }
 
-        virtual std::shared_ptr<Entity> createEntity(size_t name)
-        {
-            std::shared_ptr ent = std::make_shared<Entity>();
-            m_entities.emplace(name, ent);
-            return m_entities[name];
-        }
+    /**
+     * Update systems
+     * @param delta
+     */
+    virtual void update(size_t delta) = 0;
 
-        template<typename SystemType>
-        SystemType &createSystem()
-        {
-            static_assert(std::is_base_of_v<BaseSystem, SystemType>,
-                          "Template parameter class must be child of BaseSystem");
+    virtual std::shared_ptr<Entity> createEntity(size_t name)
+    {
+        std::shared_ptr ent = std::make_shared<Entity>(name);
+        m_entities.emplace(name, ent);
+        m_entityByNames.emplace(xg::newGuid().str(), name);
+        return m_entities[name];
+    }
 
-            std::shared_ptr<SystemType> system(new SystemType());
-            system->setEcsManager(this);
-            m_systems.insert({types::type_id<SystemType>,
-                              std::static_pointer_cast<BaseSystem>(system)});
-            return *system;
-        }
+    template <typename SystemType> SystemType &createSystem()
+    {
+        static_assert(std::is_base_of_v<BaseSystem, SystemType>,
+                      "Template parameter class must be child of BaseSystem");
 
-        virtual std::unordered_map<size_t, std::shared_ptr<Entity>> &getEntities()
-        {
-            return m_entities;
-        }
+        std::shared_ptr<SystemType> system(new SystemType());
+        system->setEcsManager(this);
+        m_systems.insert(
+            {types::type_id<SystemType>, std::static_pointer_cast<BaseSystem>(system)});
+        return *system;
+    }
 
-    protected:
-        std::unordered_map<size_t, std::shared_ptr<Entity>> m_entities;
-        std::unordered_map<size_t, std::shared_ptr<BaseSystem>> m_systems;
-    };
+    virtual std::unordered_map<size_t, std::shared_ptr<Entity>> &getEntities()
+    {
+        return m_entities;
+    }
+
+    virtual std::unordered_map<std::string, size_t> &getEntityByNames()
+    {
+        return m_entityByNames;
+    }
+
+  protected:
+    Entities m_entities;
+    EntityNames m_entityByNames;
+    Systems m_systems;
 };
+}; // namespace ecs
 
-#endif //ECSMANAGER_HPP
+#endif // ECSMANAGER_HPP
